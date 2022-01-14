@@ -104,8 +104,8 @@ public class MyArrayListPublicTester {
     public void testBasicInsert() {
         listWithNull.insert(0, Integer.valueOf(5));
         listCustomCapacity.insert(0, 100);
-
         assertEquals("should insert 5 to the list", 5, listWithNull.data[0]);
+
         assertEquals("should increment size", 11, listWithNull.size);
         assertEquals("capacity of the list should not change when insert one elem", 20, listWithNull.data.length);
 

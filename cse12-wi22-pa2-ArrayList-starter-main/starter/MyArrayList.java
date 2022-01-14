@@ -22,7 +22,7 @@ import java.rmi.server.ObjID;
 public class MyArrayList<E> implements MyList<E> {
     // The underlying data structure of the ArrayList. The index of an element in
     // this array should correspond to the index of the element in the ArrayList.
-    Object[] ray;
+    Object[] data;
     // This variable should be equal to the number of valid elements in your data
     // array. A valid element in data is an element in your ArrayList.
     int size;
@@ -34,7 +34,7 @@ public class MyArrayList<E> implements MyList<E> {
      * @return none but creates a new array with default length of 5
      */
     public MyArrayList() {
-        ray = new Object[5];
+        data = new Object[5];
         size = 0;
     }
 
@@ -45,10 +45,11 @@ public class MyArrayList<E> implements MyList<E> {
      * @return none but creates a new array with default length of the given integer
      *         and thows exception if not valid length
      */
-    public MyArrayList(int length) {
-        if (length < 0)
+    public MyArrayList(int initialCapacity) {
+        if (initialCapacity < 0)
             throw new IllegalArgumentException("The length is strictly less than 0.");
-        ray = new Object[length];
+
+        data = new Object[initialCapacity];
         size = 0;
     }
 
@@ -61,13 +62,13 @@ public class MyArrayList<E> implements MyList<E> {
      */
     public MyArrayList(E[] arr) {
         if (arr == null) {
-            ray = new Object[5];
+            data = new Object[5];
             size = 0;
         } else {
             size = arr.length;
-            ray = new Object[size];
+            data = new Object[size];
             for (int i = 0; i < size; i++) {
-                ray[i] = (E) arr[i];
+                data[i] = (E) arr[i];
             }
         }
     }
@@ -78,21 +79,23 @@ public class MyArrayList<E> implements MyList<E> {
     @SuppressWarnings("unchecked")
     public void expandCapacity(int requiredCapacity) {
         Object[] tempRay;
-        if (ray.length > requiredCapacity)
+        if (data.length > requiredCapacity)
             throw new IllegalArgumentException("requiredCapacity is strictly less than the initial capacity");
-        if (ray.length == 0) {
-            ray = new Object[5];
+        if (data.length == 0) {
+            data = new Object[5];
         } else {
-            if (ray.length * 2 < requiredCapacity) {
-                tempRay = new Object[ray.length * 2];
+            if (data.length * 2 > requiredCapacity) {
+                tempRay = new Object[data.length * 2];
             } else {
-                tempRay = new Object[ray.length * 2];
+                tempRay = new Object[requiredCapacity];
             }
 
             for (int i = 0; i < size; i++) {
-                tempRay[i] = (E) ray[i];
+                tempRay[i] = (E) data[i];
             }
+            data = tempRay;
         }
+
     }
 
     /**
@@ -101,7 +104,7 @@ public class MyArrayList<E> implements MyList<E> {
      * @return Number of elements an arraylist can hold - length of the array
      */
     public int getCapacity() {
-        return ray.length;
+        return data.length;
     }
 
     /**
@@ -112,22 +115,21 @@ public class MyArrayList<E> implements MyList<E> {
      */
     public void insert(int index, E element) {
         if (index < 0 || index > size)
-            throw new IndexOutOfBoundsException("the index input is invalid");
-        if ((ray.length + 1) > ray.length)
-            expandCapacity(ray.length + 1);
-        Object[] tempRay = new Object[ray.length];
-        boolean inserted = false;
+            throw new IndexOutOfBoundsException("the index input is invalid because size is less than" + index);
+        else if ((size + 1) > data.length)
+            expandCapacity(size + 1);
+        Object[] tempRay = new Object[data.length];
+        int tempCounter = 0;
         for (int i = 0; i < (size + 1); i++) {
             if (i == index) {
-                inserted = true;
-                tempRay[i] = element;
-
-            } else if (inserted) {
-                tempRay[i] = ray[i - 1];
+                tempRay[tempCounter] = element;
+                tempCounter++;
             } else {
-                tempRay[i] = ray[i];
+                tempRay[tempCounter] = data[i];
+                tempCounter++;
             }
         }
+        data = tempRay;
         size++;
     }
 
@@ -137,8 +139,8 @@ public class MyArrayList<E> implements MyList<E> {
      * @param element - the element to be added
      */
     public void append(E element) {
-        insert(ray.length - 1, element);
-        size++;
+        insert(size, element);
+
     }
 
     /**
@@ -148,7 +150,7 @@ public class MyArrayList<E> implements MyList<E> {
      */
     public void prepend(E element) {
         insert(0, element);
-        size++;
+
     }
 
     /**
@@ -159,9 +161,9 @@ public class MyArrayList<E> implements MyList<E> {
      */
     @SuppressWarnings("unchecked")
     public E get(int index) {
-        if (index < 0 || index > size)
-            throw new IndexOutOfBoundsException("the index input is invalid");
-        return (E) ray[index];
+        if (index < 0 || index >= size)
+            throw new IndexOutOfBoundsException("the index input is invalid: " + index);
+        return (E) data[index];
     }
 
     /**
@@ -176,8 +178,8 @@ public class MyArrayList<E> implements MyList<E> {
     public E set(int index, E element) {
         if (index < 0 || index > size)
             throw new IndexOutOfBoundsException("the index input is invalid");
-        E temp = (E) ray[index];
-        ray[index] = element;
+        E temp = (E) data[index];
+        data[index] = element;
         return temp;
     }
 
@@ -191,16 +193,17 @@ public class MyArrayList<E> implements MyList<E> {
     public E remove(int index) {
         if (index < 0 || index > size)
             throw new IndexOutOfBoundsException("the index input is invalid");
-        E temp = (E) ray[index];
-        Object[] tempRay = new Object[ray.length];
+        E temp = (E) data[index];
+        Object[] tempRay = new Object[data.length];
         int tCount = 0;
         for (int i = 0; i < size; i++) {
             if (i != index) {
-                tempRay[tCount] = ray[i];
+                tempRay[tCount] = data[i];
                 tCount++;
             }
         }
         size--;
+        data = tempRay;
         return temp;
     }
 
@@ -210,6 +213,7 @@ public class MyArrayList<E> implements MyList<E> {
      * @return number of elements present in the list
      */
     public int size() {
+
         return size;
     }
 
