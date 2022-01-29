@@ -3,7 +3,8 @@
 * Name:Dhylan Patel 
  * ID: A16993071
  * Email: ddpatel@ucsd.edu
- * Sources used: https://docs.google.com/document/d/1Je-9HpFo4g9-Cxqb07armFIoLRBOAF0WT4sB0fWBnwA/edit - the instructions fo rthe PA where I copied some definitions for variables/methods
+ * Sources used: PA2 README - 
+ * the instructions for the PA where I copied some definitions for variables/methods
  * Some example of sources used would be Tutors, Zybooks, and Lecture Slides
  * 
  * 2-4 sentence file description here
@@ -41,19 +42,48 @@ public class MyArrayListHiddenTester {
         testBasicMI = new MyArrayList<Integer>(test1);
     }
 
+    @Test
+    public void testFailures() {
+        // check with a bucnch of different positions and check to see if the array is
+        // similiar
+        MyArrayList<Integer> test = new MyArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            test.insert(i, i);
+        }
+        Integer[] ray = new Integer[] { 0, 1, 2, 3, 4 };
+        for (int j = 0; j < 5; j++) {
+            assertEquals(ray[j], test.get(j));
+        }
+        // TODO: check for whole data array when array is capacity for prepend
+        test.insert(1, 5);
+        test.prepend(12);
+        Integer[] ray2 = new Integer[] { 12, 0, 5, 1, 2, 3, 4 };
+        for (int j = 0; j < ray2.length; j++) {
+            assertEquals(ray2[j], test.get(j));
+        }
+        assertEquals(ray2.length, test.size());
+        assertEquals(10, test.getCapacity());
+    }
+
     /**
      * Aims to test the capacity argument constructor when the input
      * is not valid
      */
     @Test
     public void testConstructorInvalidArg() {
+        boolean found = false;
         try {
-            MyArrayList<String> exceptional = new MyArrayList<>(-1);
+            MyArrayList<String> exceptional = new MyArrayList<>(-4);
         } catch (Exception e) {
             // TODO: handle exception
-            assertEquals("The length is strictly less than 0.", e.getMessage());
+            //assertEquals("length strictly less than 0", e.getMessage());
 
+            found = true;
         }
+        assertEquals(true, found);
+        MyArrayList<String> exceptional2 = new MyArrayList<>(null);
+        assertEquals(5, exceptional2.data.length);
+
     }
 
     /**
@@ -64,6 +94,9 @@ public class MyArrayListHiddenTester {
     public void testConstructorNullArg() {
         MyArrayList<String> exceptional = new MyArrayList<>(null);
         assertEquals(5, exceptional.data.length);
+        MyArrayList<String> exceptional2 = new MyArrayList<>();
+        assertEquals(5, exceptional2.data.length);
+
     }
 
     /**
@@ -95,14 +128,15 @@ public class MyArrayListHiddenTester {
      */
     @Test
     public void testInsertOutOfBound() {
-
+        boolean found = false;
         try {
-            testBasicI.insert(1, 2);
+            testBasicI.insert(8, 2);
         } catch (Exception e) {
             // TODO: handle exception
-            assertEquals("the index input is invalid because size is less than1", e.getMessage());
-
+            //assertEquals("the index input is invalid", e.getMessage());
+            found = true;
         }
+        assertTrue(found);
         // assertEquals(2, testBasicI.get(0));
     }
 
@@ -129,7 +163,17 @@ public class MyArrayListHiddenTester {
      */
     @Test
     public void testInsertMultiple() {
-
+        int expecCapacity = testBasicMI.data.length;
+        int currCapacity = expecCapacity;
+        for (int i = (testBasicMI.size()); i < 100; i++) {
+            currCapacity = testBasicMI.data.length;
+            if (testBasicMI.size() == testBasicMI.data.length) {
+                testBasicMI.insert(i, i);
+                expecCapacity = testBasicMI.data.length;
+                assert (expecCapacity == currCapacity * 2);
+            } else
+                testBasicMI.insert(i, i);
+        }
     }
 
     /**
@@ -137,12 +181,17 @@ public class MyArrayListHiddenTester {
      */
     @Test
     public void testGetOutOfBound() {
+        boolean errorFound = false;
         try {
             testBasicI2.get(0);
         } catch (Exception e) {
             // TODO: handle exception
-            assertEquals("the index input is invalid: 0", e.getMessage());
+            errorFound = true;
+            //assertEquals("index input invalid", e.getMessage());
         }
+        assert (0 < 0 || 0 >= testBasicI2.size());
+        assertEquals(0, testBasicI2.size());
+        assert (errorFound);
 
     }
 
@@ -151,7 +200,15 @@ public class MyArrayListHiddenTester {
      */
     @Test
     public void testSetOutOfBound() {
-
+        boolean errorFound = false;
+        try {
+            testBasicI2.set(-423, 5);
+        } catch (Exception e) {
+            // TODO: handle exception\
+            errorFound = true;
+            //assertEquals("the index input is invalid", e.getMessage());
+        }
+        assert (errorFound);
     }
 
     /**
@@ -159,7 +216,15 @@ public class MyArrayListHiddenTester {
      */
     @Test
     public void testRemoveOutOfBound() {
-
+        boolean errorFound = false;
+        try {
+            testBasicI2.remove(-423);
+        } catch (Exception e) {
+            // TODO: handle exception\
+            errorFound = true;
+            //assertEquals("the index input is invalid", e.getMessage());
+        }
+        assert (errorFound);
     }
 
     /**
@@ -168,7 +233,15 @@ public class MyArrayListHiddenTester {
      */
     @Test
     public void testExpandCapacitySmaller() {
-
+        boolean errorFound = false;
+        try {
+            testBasicMI.expandCapacity(-1);
+        } catch (Exception e) {
+            // TODO: handle exception\
+            errorFound = true;
+            //assertEquals("requiredCapacity not valid", e.getMessage());
+        }
+        assert (errorFound);
     }
 
     /**
@@ -177,7 +250,8 @@ public class MyArrayListHiddenTester {
      */
     @Test
     public void testExpandCapacityExplode() {
-
+        testBasicMI.expandCapacity(18);
+        assertEquals(18, testBasicMI.data.length);
     }
 
 }
