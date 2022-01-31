@@ -320,7 +320,7 @@ public class MyLinkedList<E> extends AbstractList<E> {
 		 * @return true pr false depending on if there is next
 		 */
 		public boolean hasNext() {
-			if (!(right.equals(tail))) {
+			if (!(right.getNext()==null)) {
 				return true;
 			} else
 				return false;
@@ -419,8 +419,9 @@ public class MyLinkedList<E> extends AbstractList<E> {
 			newNode.setPrev(left);
 			left.setNext(newNode);
 			right.setPrev(newNode);
-			right = newNode;
-			next();
+			left = newNode;
+			idx++;
+			size++;
 			canRemoveOrSet = false;
 
 		}

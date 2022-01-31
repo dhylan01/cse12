@@ -57,6 +57,7 @@ public class MyLinkedListCustomTester {
         // checking empty list
         assertFalse(listTestIter.hasNext());
         listTestIter.add(10);
+        
         assertTrue(listTestIter.hasNext());
         // moves to the tail where there will be no next node
         /*
@@ -283,14 +284,14 @@ public class MyLinkedListCustomTester {
         }
         assertTrue(found);
         assertEquals(0, listTestIter.nextIndex());
-        int[] ray = new int[20];
+        
         for (int i = 0; i < 20; i++) {
-            ray[i] = i;
+           
             listTestIter.add(i * 2);
-            assertEquals((ray[i] * 2), (int) listTest.get(i));
+            assertEquals(i* 2, (int) listTest.get(i));
         }
         for (int i = 0; i < 20; i++) {
-            assertEquals(ray[i], listTestIter.nextIndex());
+            assertEquals(i, listTestIter.nextIndex());
         }
     }
 
