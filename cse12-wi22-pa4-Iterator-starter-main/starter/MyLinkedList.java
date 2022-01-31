@@ -320,7 +320,7 @@ public class MyLinkedList<E> extends AbstractList<E> {
 		 * @return true pr false depending on if there is next
 		 */
 		public boolean hasNext() {
-			if (!right.getNext().equals(tail)) {
+			if (!(right.equals(tail))) {
 				return true;
 			} else
 				return false;
@@ -341,6 +341,7 @@ public class MyLinkedList<E> extends AbstractList<E> {
 			right = right.getNext();
 			forward = true;
 			idx++;
+			canRemoveOrSet = true;
 			return toReturn;
 		}
 
@@ -351,7 +352,7 @@ public class MyLinkedList<E> extends AbstractList<E> {
 		 * @return true of false if there is a node in prev direction
 		 */
 		public boolean hasPrevious() {
-			if (!left.getPrev().equals(head)) {
+			if (!left.equals(head)) {
 				return true;
 			} else
 				return false;
@@ -373,6 +374,7 @@ public class MyLinkedList<E> extends AbstractList<E> {
 			right = left;
 			forward = false;
 			idx--;
+			canRemoveOrSet = true;
 			return toReturn;
 		}
 
@@ -386,7 +388,7 @@ public class MyLinkedList<E> extends AbstractList<E> {
 			if (!hasNext()) {
 				return size;
 			} else
-				return idx + 1;
+				return idx;
 		}
 
 		/**
@@ -419,6 +421,8 @@ public class MyLinkedList<E> extends AbstractList<E> {
 			right.setPrev(newNode);
 			right = newNode;
 			next();
+			canRemoveOrSet = false;
+
 		}
 
 		/**
@@ -434,9 +438,10 @@ public class MyLinkedList<E> extends AbstractList<E> {
 			if (!canRemoveOrSet) {
 				throw new IllegalStateException();
 			}
-			if (forward) {
+			if (!forward) {
+
 				right.setElement(element);
-			} else if (!forward) {
+			} else if (forward) {
 				left.setElement(element);
 			}
 		}
@@ -448,6 +453,8 @@ public class MyLinkedList<E> extends AbstractList<E> {
 		 * @return none
 		 */
 		public void remove() {
+			// paul <iterator> cao tail
+			// forward false
 			if (!canRemoveOrSet) {
 				throw new IllegalStateException();
 			}
@@ -455,11 +462,18 @@ public class MyLinkedList<E> extends AbstractList<E> {
 				left.getNext().setPrev(left.getPrev());
 				left.getPrev().setNext(left.getNext());
 				left = left.getPrev();
+				idx--;
 			} else if (!forward) {
-				right.getNext().setPrev(right.getPrev());
-				right.getPrev().setNext(right.getNext());
-				right = right.getPrev();
+				// tail prev = paul
+				// paul next = tail
+				// paul tail
+				Node nextNode = right.getNext();
+				nextNode.setPrev(right.getPrev());
+				left.setNext(nextNode);
+				right = nextNode;
 			}
+
+			canRemoveOrSet = false;
 		}
 	}
 }

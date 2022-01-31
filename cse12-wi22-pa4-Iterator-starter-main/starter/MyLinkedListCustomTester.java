@@ -14,8 +14,7 @@
 
 import static org.junit.Assert.*;
 import org.junit.*;
-
-import MyLinkedList.MyListIterator;
+import java.util.NoSuchElementException;
 
 /**
  * TODO: Add your class header
@@ -57,12 +56,14 @@ public class MyLinkedListCustomTester {
         MyLinkedList.MyListIterator listTestIter = listTest.new MyListIterator();
         // checking empty list
         assertFalse(listTestIter.hasNext());
-        listTest.add(10);
+        listTestIter.add(10);
         assertTrue(listTestIter.hasNext());
         // moves to the tail where there will be no next node
-        for (int i = 0; i < listLen2.size(); i++) {
-            listTestIter.next();
-        }
+        /*
+         * for (int i = 0; i < listLen2.size(); i++) {
+         * listTestIter.next();
+         * }
+         */
         assertFalse(listTestIter.hasNext());
 
     }
@@ -75,18 +76,22 @@ public class MyLinkedListCustomTester {
     public void testNext() {
         MyLinkedList<Integer> listTest = new MyLinkedList<>();
         MyLinkedList.MyListIterator listTestIter = listTest.new MyListIterator();
-        int[] ray = new int[20];
-        for (int i = 0; i < 20; i++) {
-            ray[i] = i * 2;
-            listTest.add(i * 2);
-        }
-        for (int i = 0; i < 20; i++) {
-            assertEquals(ray[i], listTestIter.next());
-        }
+        MyLinkedList.MyListIterator listTestIter2;
+        MyLinkedList<Integer> listTest2;
+        /*
+         * int[] ray = new int[20];
+         * for (int i = 0; i < 20; i++) {
+         * ray[i] = i * 2;
+         * listTest.add(i * 2);
+         * }
+         * for (int i = 0; i < 20; i++) {
+         * assertEquals(ray[i], listTestIter.next());
+         * }
+         */
         boolean noElementFound = false;
         try {
             listTest2 = new MyLinkedList();
-            listTestIter2 = new listTest2.newMyListIterator();
+            listTestIter2 = listTest2.new MyListIterator();
             listTestIter2.next();
         } catch (NoSuchElementException e) {
             // TODO: handle exception
@@ -122,14 +127,16 @@ public class MyLinkedListCustomTester {
     public void testPrevious() {
         MyLinkedList<Integer> listTest = new MyLinkedList<>();
         MyLinkedList.MyListIterator listTestIter = listTest.new MyListIterator();
-        int[] ray = new int[20];
-        for (int i = 0; i < 20; i++) {
-            ray[i] = i * 2;
-            listTest.add(i * 2);
-        }
-        for (int i = 19; i > -1; i--) {
-            assertEquals(ray[i], listTestIter.previous());
-        }
+        /*
+         * int[] ray = new int[20];
+         * for (int i = 0; i < 20; i++) {
+         * ray[i] = i * 2;
+         * listTest.add(i * 2);
+         * }
+         * for (int i = 19; i > -1; i--) {
+         * assertEquals(ray[i], listTestIter.previous());
+         * }
+         */
         MyLinkedList<Integer> listTest2 = new MyLinkedList<>();
         MyLinkedList.MyListIterator listTestIter2 = listTest.new MyListIterator();
         boolean noElementFound = false;
@@ -147,16 +154,19 @@ public class MyLinkedListCustomTester {
      */
     @Test
     public void testNextIndex() {
+
         MyLinkedList<Integer> listTest = new MyLinkedList<>();
         MyLinkedList.MyListIterator listTestIter = listTest.new MyListIterator();
         assertEquals(0, listTestIter.nextIndex());
-        int[] ray = new int[20];
+        
         for (int i = 0; i < 20; i++) {
-            ray[i] = i;
-            listTest.add(i * 2);
+        
+            listTestIter.add(i * 2);
+            assertEquals(listTestIter.idx , listTestIter.nextIndex());
+            assertEquals(i , listTestIter.nextIndex());
         }
         for (int i = 0; i < 20; i++) {
-            assertEquals(ray[i], listTestIter.nextIndex());
+            //assertEquals(i + 1, listTestIter.nextIndex());
         }
 
     }
